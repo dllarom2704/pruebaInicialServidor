@@ -1,2 +1,3 @@
-James Cosling, 32000032G, M, 9, 7
-Ada Lovelace, 32000031R, F, 1, 1
+null
+Ada Lovelace, 32000031R, F, 11
+James Cosling, 32000032G, M, 97
