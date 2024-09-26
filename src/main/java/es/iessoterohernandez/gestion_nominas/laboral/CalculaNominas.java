@@ -21,7 +21,7 @@ public class CalculaNominas {
 	public static Nomina nomina = new Nomina();
 	private static final String URL = "jdbc:mysql://localhost:3306/gestion_nominas";
 	private static final String USER = "root";
-	private static final String PASSWORD = "";
+	private static final String PASSWORD = "123456";
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -180,101 +180,160 @@ public class CalculaNominas {
 							"\nSUBMENÚ\n---------------\n  1. Modificar datos (menos sueldo)\n  2. Recalcular y actualizar el sueldo\n  3. Recalcular y actualizar los sueldos de todos\n  4. Realizar una copia de seguirdad de la base de datos en ficheros\nSelecciona una opción: ");
 					Integer opcion2 = sc.nextInt();
 					sc.nextLine();
-					do {
-						switch (opcion2) {
+
+					switch (opcion2) {
+					case 1:
+						System.out.println("\nIntroduzca el dni del empleado: ");
+						String dni2 = sc.nextLine();
+
+						System.out.println(
+								"\n¿Qué quieres actualizar?\n  1. Nombre\n  2. Dni\n  3. Sexo\n  4. Categoria\n  5. Años\nSelecciona una opción: ");
+						Integer opcion3 = sc.nextInt();
+						sc.nextLine();
+						switch (opcion3) {
 						case 1:
-							System.out.println("\nIntroduzca el dni del empleado: ");
-							String dni2 = sc.nextLine();
+							System.out.println("\nIntroduzca el nuevo nombre: ");
+							String nombre = sc.nextLine();
 
-							System.out.println(
-									"\n¿Qué quieres actualizar?\n  1. Nombre\n  2. Dni\n  3. Sexo\n  4. Categoria\n  5. Años\nSelecciona una opción: ");
-							Integer opcion3 = sc.nextInt();
-							sc.nextLine();
-							switch (opcion3) {
-							case 1:
-								System.out.println("\nIntroduzca el nuevo nombre: ");
-								String nombre = sc.nextLine();
+							statement = connection.createStatement();
+							statement.executeUpdate(
+									"UPDATE empleados SET nombre = '" + nombre + "' WHERE dni = '" + dni2 + "'");
 
-								statement = connection.createStatement();
-								statement.executeUpdate("UPDATE empleados SET nombre = '" + nombre
-										+ "' WHERE dni = '" + dni2 + "'");
-
-								System.out.println("\nNombre actualizado");
-								break;
-							case 2:
-								System.out.println("\nIntroduzca el nuevo dni: ");
-								String dniToChange = sc.nextLine();
-
-								statement = connection.createStatement();
-								statement.executeUpdate("UPDATE empleados SET dni = '" + dniToChange
-										+ "' WHERE dni = '" + dni2 + "'");
-
-								System.out.println("\nDni actualizado");
-								break;
-							case 3:
-								System.out.println("\nIntroduzca el nuevo sexo: ");
-								String sexo = sc.nextLine();
-
-								statement = connection.createStatement();
-								statement.executeUpdate("UPDATE empleados SET sexo = '" + sexo.charAt(0)
-										+ "' WHERE dni = '" + dni2 + "'");
-
-								System.out.println("\nSexo actualizado");
-								break;
-							case 4:
-								System.out.println("\nIntroduzca el nuevo número de categoría: ");
-								Integer categoria = sc.nextInt();
-
-								statement = connection.createStatement();
-								statement.executeUpdate("UPDATE empleados SET categoria = " + categoria
-										+ " WHERE dni = '" + dni2 + "'");
-
-								System.out.println("\nCategoría actualizada");
-								break;
-							case 5:
-								System.out.println("\nIntroduzca el nuevo número de años: ");
-								Integer anyos = sc.nextInt();
-
-								statement = connection.createStatement();
-								statement.executeUpdate(
-										"UPDATE empleados SET anyos = " + anyos + " WHERE dni = '" + dni2 + "'");
-
-								System.out.println("\nAños actualizados");
-								break;
-							default:
-								break;
-							}
+							System.out.println("\nNombre actualizado");
 							break;
 						case 2:
-							System.out.println("\nIntroduzca el dni del empleado: ");
-							String dni3 = sc.nextLine();
+							System.out.println("\nIntroduzca el nuevo dni: ");
+							String dniToChange = sc.nextLine();
+
+							statement = connection.createStatement();
+							statement.executeUpdate("DELETE FROM nominas WHERE dni = '" + dni2 + "'");
+
+							statement = connection.createStatement();
+							statement.executeUpdate(
+									"UPDATE empleados SET dni = '" + dniToChange + "' WHERE dni = '" + dni2 + "'");
 
 							statement = connection.createStatement();
 							ResultSet empleado = statement.executeQuery(
-									"SELECT nombre, dni, sexo, categoria, anyos FROM empleados WHERE dni = '" + dni3
-											+ "'");
+									"SELECT nombre, dni, sexo, categoria, anyos FROM empleados WHERE dni = '"
+											+ dniToChange + "'");
 
-							while(empleado.next()) {
+							while (empleado.next()) {
 								Integer sueldo = nomina.sueldo(new Empleado(empleado.getString("nombre"),
 										empleado.getString("dni"), empleado.getString("sexo").charAt(0),
 										empleado.getInt("categoria"), empleado.getInt("anyos")));
-	
+
 								statement = connection.createStatement();
-								statement.executeUpdate("UPDATE nominas SET sueldo = " + sueldo + " WHERE dni = '" + dni3 + "'");
+								statement.executeUpdate("INSERT INTO nominas (dni, sueldo) VALUES ('" + dniToChange
+										+ "', " + sueldo + ")");
 							}
 
-							System.out.println("\nSueldo actualizado");
+							System.out.println("\nDni actualizado");
+							break;
+						case 3:
+							System.out.println("\nIntroduzca el nuevo sexo: ");
+							String sexo = sc.nextLine();
+
+							statement = connection.createStatement();
+							statement.executeUpdate(
+									"UPDATE empleados SET sexo = '" + sexo.charAt(0) + "' WHERE dni = '" + dni2 + "'");
+
+							System.out.println("\nSexo actualizado");
+							break;
+						case 4:
+							System.out.println("\nIntroduzca el nuevo número de categoría: ");
+							Integer categoria = sc.nextInt();
+
+							statement = connection.createStatement();
+							statement.executeUpdate(
+									"UPDATE empleados SET categoria = " + categoria + " WHERE dni = '" + dni2 + "'");
+
+							System.out.println("\nCategoría actualizada");
+							break;
+						case 5:
+							System.out.println("\nIntroduzca el nuevo número de años: ");
+							Integer anyos = sc.nextInt();
+
+							statement = connection.createStatement();
+							statement.executeUpdate(
+									"UPDATE empleados SET anyos = " + anyos + " WHERE dni = '" + dni2 + "'");
+
+							System.out.println("\nAños actualizados");
 							break;
 						default:
-							if (opcion2 != 0) {
-								System.out.println("Selecciona una opción válida");
-								break;
-							}
-
-							System.out.println("Saliendo...");
 							break;
 						}
-					} while (opcion2 != 0);
+						break;
+					case 2:
+						System.out.println("\nIntroduzca el dni del empleado: ");
+						String dni3 = sc.nextLine();
+
+						statement = connection.createStatement();
+						ResultSet empleado = statement.executeQuery(
+								"SELECT nombre, dni, sexo, categoria, anyos FROM empleados WHERE dni = '" + dni3 + "'");
+
+						while (empleado.next()) {
+							Integer sueldo = nomina.sueldo(new Empleado(empleado.getString("nombre"),
+									empleado.getString("dni"), empleado.getString("sexo").charAt(0),
+									empleado.getInt("categoria"), empleado.getInt("anyos")));
+
+							statement = connection.createStatement();
+							statement.executeUpdate(
+									"UPDATE nominas SET sueldo = " + sueldo + " WHERE dni = '" + dni3 + "'");
+						}
+
+						System.out.println("\nSueldo actualizado");
+						break;
+					case 3:
+						statement = connection.createStatement();
+						ResultSet empleadosFromQuery = statement
+								.executeQuery("SELECT nombre, dni, sexo, categoria, anyos FROM empleados");
+						while (empleadosFromQuery.next()) {
+							Integer sueldo = nomina.sueldo(new Empleado(empleadosFromQuery.getString("nombre"),
+									empleadosFromQuery.getString("dni"), empleadosFromQuery.getString("sexo").charAt(0),
+									empleadosFromQuery.getInt("categoria"), empleadosFromQuery.getInt("anyos")));
+
+							statement = connection.createStatement();
+							statement.executeUpdate("UPDATE nominas SET sueldo = " + sueldo + " WHERE dni = '"
+									+ empleadosFromQuery.getString("dni") + "'");
+
+							System.out.println("\nSueldos actualizados");
+						}
+						break;
+					case 4:
+						statement = connection.createStatement();
+						ResultSet empleadosFromQuery2 = statement
+								.executeQuery("SELECT nombre, dni, sexo, categoria, anyos FROM empleados");
+						FileWriter writer = new FileWriter("copiaSeguridad.txt");
+
+						String text = "EMPLEADOS\n---------------";
+						while (empleadosFromQuery2.next()) {
+							text += "\n" + empleadosFromQuery2.getString("nombre") + ", "
+									+ empleadosFromQuery2.getString("dni") + ", "
+									+ empleadosFromQuery2.getString("sexo").charAt(0) + ", "
+									+ empleadosFromQuery2.getInt("categoria") + ", "
+									+ empleadosFromQuery2.getInt("anyos") + "\n";
+						}
+
+						text += "\nNOMINAS\n---------------";
+						ResultSet nominas = statement.executeQuery("SELECT dni, sueldo FROM nominas");
+						while(nominas.next()) {
+							text += "\n" + nominas.getString("dni") + ", " + nominas.getInt("sueldo") + "\n";
+						}
+
+						writer.write(text);
+						writer.close();
+
+						System.out.println("\nBackup completado");
+						break;
+					default:
+						if (opcion2 != 0) {
+							System.out.println("Selecciona una opción válida");
+							break;
+						}
+
+						System.out.println("Saliendo...");
+						break;
+					}
 					break;
 				default:
 					if (opcion != 0) {
@@ -287,9 +346,9 @@ public class CalculaNominas {
 				}
 			} while (!(opcion == 0));
 
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 //		} catch (DatosNoCorrectosException e) {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
@@ -417,6 +476,9 @@ public class CalculaNominas {
 		}
 	}
 
+	/**
+	 * @param fichero
+	 */
 	private static void altaEmpleado(String fichero) {
 
 		Connection connection = null;
