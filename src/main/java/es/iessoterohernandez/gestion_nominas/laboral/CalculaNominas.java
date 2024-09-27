@@ -33,8 +33,14 @@ public class CalculaNominas {
 
 		try {
 			// BASE DE DATOS
+			// Conexión de la base de datos
 			connection = DriverManager.getConnection(URL, USER, PASSWORD);
 			System.out.println("\nConexión establecida con éxito\n");
+
+			// Todo el código que se muestra a continuación el el utilizado para generar los
+			// objetos empleados, para que figure todo lo de la base de datos en el
+			// 'empleados.txt' y en el 'salarios.dat' y para actualizar los valores a la
+			// hora de incrementar los años de trabajo y a la hora de cambiar la categoría
 
 //			List<Empleado> empleados = new ArrayList<>();
 //
@@ -143,6 +149,8 @@ public class CalculaNominas {
 //			writer.close();
 
 			// MENU
+			// Este es el menú que se pide en el apartado 5 de la parte 2. Trabaja con la
+			// base de datos generada por el código de arriba que está comentado
 			Integer opcion = null;
 			do {
 				System.out.println(
@@ -316,7 +324,7 @@ public class CalculaNominas {
 
 						text += "\nNOMINAS\n---------------";
 						ResultSet nominas = statement.executeQuery("SELECT dni, sueldo FROM nominas");
-						while(nominas.next()) {
+						while (nominas.next()) {
 							text += "\n" + nominas.getString("dni") + ", " + nominas.getInt("sueldo") + "\n";
 						}
 
